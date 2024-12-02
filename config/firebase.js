@@ -1,10 +1,18 @@
 const admin = require('firebase-admin');
-const serviceAccount = require('../resources/serviceAccountKey.json');
+const fs = require('fs');
+const path = require('path');
+
+const serviceAccountPath = path.join(__dirname, '../resources/serviceAccountKey.json');
+let serviceAccount;
+
+if (fs.existsSync(serviceAccountPath)) {
+    serviceAccount = require(serviceAccountPath);
+}
 
 const isAppDefaultCred = process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'production';
 
 admin.initializeApp({
-    credential: isAppDefaultCred ? admin.credential.applicationDefault() : admin.credential.cert(serviceAccount)
+    credential: !isAppDefaultCred && serviceAccount ? admin.credential.cert(serviceAccount): admin.credential.applicationDefault()
 });
 
 const db = admin.firestore();
