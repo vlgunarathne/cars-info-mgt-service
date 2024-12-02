@@ -21,6 +21,16 @@ spec:
         env:
         - name: NODE_ENV
           value: "development"
+        - name: GOOGLE_APPLICATION_CREDENTIALS
+          value: "/secrets/key.json"
+        volumeMounts:
+        - name: firestore-key-volume
+          mountPath: "/secrets"
+          readOnly: true
+      volumes:
+        - name: firestore-key-volume
+          secret:
+            secretName: firestore-key
 ---
 apiVersion: v1
 kind: Service

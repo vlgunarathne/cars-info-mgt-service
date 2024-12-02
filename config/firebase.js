@@ -1,11 +1,7 @@
 const admin = require('firebase-admin');
-// Commented for deployment
-// const serviceAccount = require('../resources/serviceAccountKey.json');
-
-const isAppDefaultCred = process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'production';
 
 admin.initializeApp({
-    credential: admin.credential.applicationDefault() // admin.credential.cert(serviceAccount)
+    credential: admin.credential.applicationDefault()
 });
 
 const db = admin.firestore();
