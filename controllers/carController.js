@@ -1,12 +1,12 @@
 const carService = require('../services/carService');
-
+const filterService = require('../services/filterService');
 class CarController {
     async create(req, res) {
         try {
             const id = await carService.create(req.body);
             res.status(201).send({ id });
         } catch (error) {
-            res.status(400).send(error.message);
+            res.status(400).send({ error: error.message });
         }
     }
 
@@ -14,30 +14,30 @@ class CarController {
         try {
             const car = await carService.getById(req.params.id);
             if (!car) {
-                res.status(404).send('Car not found');
+                res.status(404).send({ message: 'Car not found' });
             } else {
                 res.status(200).send(car);
             }
         } catch (error) {
-            res.status(400).send(error.message);
+            res.status(400).send({ error: error.message });
         }
     }
 
     async update(req, res) {
         try {
             await carService.update(req.params.id, req.body);
-            res.status(200).send('Car updated successfully');
+            res.status(200).send({ message: 'Car updated successfully' });
         } catch (error) {
-            res.status(400).send(error.message);
+            res.status(400).send({ error: error.message });
         }
     }
 
     async delete(req, res) {
         try {
             await carService.delete(req.params.id);
-            res.status(200).send('Car deleted successfully');
+            res.status(200).send({ message: 'Car deleted successfully' });
         } catch (error) {
-            res.status(400).send(error.message);
+            res.status(400).send({ error: error.message });
         }
     }
 
@@ -71,7 +71,7 @@ class CarController {
             const cars = await carService.getAll(filters, sortOptions);
             res.status(200).send(cars);
         } catch (error) {
-            res.status(400).send(error.message);
+            res.status(400).send({ error: error.message });
         }
     }
 }

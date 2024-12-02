@@ -6,16 +6,16 @@ class FilterController {
             const filters = await filterService.getAll();
             res.status(200).send(filters);
         } catch (error) {
-            res.status(400).send(error.message);
+            res.status(400).send({ error: error.message });
         }
     }
 
     async delete(req, res) {
         try {
             await filterService.delete(req.params.id);
-            res.status(200).send('Filter deleted successfully');
+            res.status(200).send({ message: 'Filter deleted successfully' });
         } catch (error) {
-            res.status(400).send(error.message);
+            res.status(400).send({ error: error.message });
         }
     }
 }
