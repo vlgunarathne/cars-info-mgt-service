@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cars-info-mgt-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cars-info-mgt-service
+  template:
+    metadata:
+      labels:
+        app: cars-info-mgt-service
+    spec:
+      serviceAccountName: artifact-reader
+      containers:
+      - name: cars-info-mgt-service
+        image: gcr.io/my-demo-project-442910/cars-info-mgt-service:latest
+        ports:
+        - containerPort: 3000
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: cars-info-mgt-service
+spec:
+  type: LoadBalancer
+  selector:
+    app: cars-info-mgt-service
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 3000

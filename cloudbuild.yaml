@@ -1,0 +1,19 @@
+steps:
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['build', '-t', 'gcr.io/my-demo-project-442910/cars-info-mgt-service:latest', '.']
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['push', 'gcr.io/my-demo-project-442910/cars-info-mgt-service:latest']
+- name: 'gcr.io/cloud-builders/gcloud'
+  args:
+  - 'deploy'
+  - 'releases'
+  - 'create'
+  - 'cars-info-service-release-$SHORT_SHA'
+  - '--delivery-pipeline=cars-info-mgt-service-pipeline'
+  - '--region=us-central1'
+  - '--images=cars-info-mgt-service=gcr.io/my-demo-project-442910/cars-info-mgt-service:latest'
+options:
+  logging: CLOUD_LOGGING_ONLY
+
+images:
+- 'gcr.io/my-demo-project-442910/cars-info-mgt-service:latest'
