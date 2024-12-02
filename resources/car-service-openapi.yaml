@@ -1,0 +1,345 @@
+swagger: '2.0'
+info:
+  title: Cars Information Management Service
+  description: API for managing car information and search filters
+  version: 1.0.0
+  contact:
+    name: API Support
+    email: support@example.com
+
+x-google-backend:
+  address: http://34.136.40.129:80
+
+host: localhost:3000
+basePath: /api
+schemes:
+  - http
+
+tags:
+  - name: Cars
+    description: Car management operations
+  - name: Filters
+    description: Search filter history operations
+
+paths:
+  /cars:
+    post:
+      tags:
+        - Cars
+      summary: Create a new car
+      operationId: createCar
+      parameters:
+        - in: body
+          name: body
+          required: true
+          schema:
+            $ref: '#/definitions/CarInput'
+      responses:
+        '201':
+          description: Car created successfully
+          schema:
+            type: object
+            properties:
+              id:
+                type: string
+        '400':
+          description: Invalid input
+    
+    get:
+      tags:
+        - Cars
+      summary: Get all cars with optional filters
+      operationId: getAllCars
+      parameters:
+        - $ref: '#/parameters/nameParam'
+        - $ref: '#/parameters/mpgMinParam'
+        - $ref: '#/parameters/mpgMaxParam'
+        - $ref: '#/parameters/cylindersParam'
+        - $ref: '#/parameters/displacementMinParam'
+        - $ref: '#/parameters/displacementMaxParam'
+        - $ref: '#/parameters/horsepowerMinParam'
+        - $ref: '#/parameters/horsepowerMaxParam'
+        - $ref: '#/parameters/weightMinParam'
+        - $ref: '#/parameters/weightMaxParam'
+        - $ref: '#/parameters/accelerationMinParam'
+        - $ref: '#/parameters/accelerationMaxParam'
+        - $ref: '#/parameters/modelYearParam'
+        - $ref: '#/parameters/originParam'
+        - $ref: '#/parameters/sortByParam'
+        - $ref: '#/parameters/orderParam'
+      responses:
+        '200':
+          description: List of cars matching the criteria
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Car'
+        '400':
+          description: Invalid parameters
+
+  /cars/{id}:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        type: string
+        description: Car ID
+    
+    get:
+      tags:
+        - Cars
+      summary: Get a car by ID
+      operationId: getCarById
+      responses:
+        '200':
+          description: Car details
+          schema:
+            $ref: '#/definitions/Car'
+        '404':
+          description: Car not found
+    
+    put:
+      tags:
+        - Cars
+      summary: Update a car
+      operationId: updateCar
+      parameters:
+        - in: body
+          name: body
+          required: true
+          schema:
+            $ref: '#/definitions/CarInput'
+      responses:
+        '200':
+          description: Car updated successfully
+        '404':
+          description: Car not found
+    
+    delete:
+      tags:
+        - Cars
+      summary: Delete a car
+      operationId: deleteCar
+      responses:
+        '200':
+          description: Car deleted successfully
+        '404':
+          description: Car not found
+
+  /filters:
+    get:
+      tags:
+        - Filters
+      summary: Get all stored search filters
+      operationId: getAllFilters
+      responses:
+        '200':
+          description: List of stored filters
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Filter'
+
+  /filters/{id}:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        type: string
+        description: Filter ID
+    delete:
+      tags:
+        - Filters
+      summary: Delete a stored filter
+      operationId: deleteFilter
+      responses:
+        '200':
+          description: Filter deleted successfully
+        '404':
+          description: Filter not found
+
+definitions:
+  CarInput:
+    type: object
+    properties:
+      name:
+        type: string
+      mpg:
+        type: number
+      cylinders:
+        type: integer
+      displacement:
+        type: number
+      horsepower:
+        type: number
+      weight:
+        type: number
+      acceleration:
+        type: number
+      model_year:
+        type: integer
+      origin:
+        type: string
+    required:
+      - name
+      - model_year
+
+  Car:
+    allOf:
+      - $ref: '#/definitions/CarInput'
+      - type: object
+        properties:
+          id:
+            type: string
+          keywords:
+            type: array
+            items:
+              type: string
+
+  Filter:
+    type: object
+    properties:
+      id:
+        type: string
+      name:
+        type: string
+      mpg_min:
+        type: string
+      mpg_max:
+        type: string
+      cylinders:
+        type: string
+      displacement_min:
+        type: string
+      displacement_max:
+        type: string
+      horsepower_min:
+        type: string
+      horsepower_max:
+        type: string
+      weight_min:
+        type: string
+      weight_max:
+        type: string
+      acceleration_min:
+        type: string
+      acceleration_max:
+        type: string
+      model_year:
+        type: string
+      origin:
+        type: string
+      createdAt:
+        type: string
+        format: date-time
+
+parameters:
+  nameParam:
+    name: name
+    in: query
+    type: string
+    description: Partial or full car name to search for
+  
+  mpgMinParam:
+    name: mpg_min
+    in: query
+    type: number
+    description: Minimum miles per gallon
+  
+  mpgMaxParam:
+    name: mpg_max
+    in: query
+    type: number
+    description: Maximum miles per gallon
+  
+  cylindersParam:
+    name: cylinders
+    in: query
+    type: integer
+    description: Number of cylinders
+  
+  displacementMinParam:
+    name: displacement_min
+    in: query
+    type: number
+    description: Minimum displacement
+  
+  displacementMaxParam:
+    name: displacement_max
+    in: query
+    type: number
+    description: Maximum displacement
+  
+  horsepowerMinParam:
+    name: horsepower_min
+    in: query
+    type: number
+    description: Minimum horsepower
+  
+  horsepowerMaxParam:
+    name: horsepower_max
+    in: query
+    type: number
+    description: Maximum horsepower
+  
+  weightMinParam:
+    name: weight_min
+    in: query
+    type: number
+    description: Minimum weight
+  
+  weightMaxParam:
+    name: weight_max
+    in: query
+    type: number
+    description: Maximum weight
+  
+  accelerationMinParam:
+    name: acceleration_min
+    in: query
+    type: number
+    description: Minimum acceleration
+  
+  accelerationMaxParam:
+    name: acceleration_max
+    in: query
+    type: number
+    description: Maximum acceleration
+  
+  modelYearParam:
+    name: model_year
+    in: query
+    type: integer
+    description: Model year
+  
+  originParam:
+    name: origin
+    in: query
+    type: string
+    description: Car origin
+  
+  sortByParam:
+    name: sortBy
+    in: query
+    type: string
+    enum:
+      - name
+      - mpg
+      - cylinders
+      - displacement
+      - horsepower
+      - weight
+      - acceleration
+      - model_year
+      - origin
+    description: Field to sort by
+  
+  orderParam:
+    name: order
+    in: query
+    type: string
+    enum:
+      - asc
+      - desc
+    default: asc
+    description: Sort order
